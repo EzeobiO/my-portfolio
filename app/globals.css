@@ -1,22 +1,22 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   :root {
-    --background: 14 14 17;
-    --foreground: 255 255 255;
-    --accent: 79 124 255;
-    --accent-hover: 61 100 224;
-    --secondary: 156 163 175;
+    --background: 9 9 11; /* zinc-950 */
+    --foreground: 250 250 250; /* zinc-100 */
+  }
+
+  * {
+    border-color: rgb(39 39 42); /* zinc-800 */
   }
 
   body {
     background-color: rgb(var(--background));
     color: rgb(var(--foreground));
+    -webkit-font-smoothing: antialiased;
   }
-}
 
-html {
-  scroll-behavior: smooth;
+  html {
+    scroll-behavior: smooth;
+  }
 }
