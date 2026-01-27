@@ -2,10 +2,103 @@
 
 import { motion } from "framer-motion";
 import { GraduationCap, Target, Briefcase } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export function InteractiveCards() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [showScrollbar, setShowScrollbar] = useState(false);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const isUserScrollingRef = useRef(false);
+  const autoScrollTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const userScrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const startAutoScroll = () => {
+      autoScrollTimerRef.current = setInterval(() => {
+        if (isUserScrollingRef.current) return;
+
+        container.scrollTop += 1;
+
+        const halfHeight = container.scrollHeight / 2;
+        if (container.scrollTop >= halfHeight) {
+          container.scrollTop -= halfHeight;
+        }
+      }, 32);
+    };
+
+    const stopAutoScroll = () => {
+      if (autoScrollTimerRef.current) {
+        clearInterval(autoScrollTimerRef.current);
+        autoScrollTimerRef.current = null;
+      }
+    };
+
+    const handleUserIntent = () => {
+      isUserScrollingRef.current = true;
+      setShowScrollbar(true);
+      stopAutoScroll();
+
+      if (userScrollTimeoutRef.current) {
+        clearTimeout(userScrollTimeoutRef.current);
+      }
+
+      userScrollTimeoutRef.current = setTimeout(() => {
+        isUserScrollingRef.current = false;
+        setShowScrollbar(false);
+        startAutoScroll();
+      }, 6000);
+    };
+
+    container.addEventListener("wheel", handleUserIntent);
+    container.addEventListener("touchstart", handleUserIntent);
+    container.addEventListener("pointerdown", handleUserIntent);
+
+    startAutoScroll();
+
+    return () => {
+      stopAutoScroll();
+      if (userScrollTimeoutRef.current) {
+        clearTimeout(userScrollTimeoutRef.current);
+      }
+      container.removeEventListener("wheel", handleUserIntent);
+      container.removeEventListener("touchstart", handleUserIntent);
+      container.removeEventListener("pointerdown", handleUserIntent);
+    };
+  }, []);
+
+  const coursework = {
+    ai: [
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Machine Vision (Computer Vision)",
+      "Natural Language Processing",
+    ],
+    core: [
+      "Data Structures",
+      "Algorithm Analysis",
+      "Operating Systems",
+      "Database Systems",
+      "Computer Organization & Architecture",
+      "Software Engineering",
+      "Parallel & Distributed Computing",
+      "Programming Languages",
+    ],
+    swe: [
+      "Software Architecture & Design",
+      "Software Testing & QA",
+      "User Centered Design",
+    ],
+    math: [
+      "Discrete Mathematics",
+      "Linear Algebra",
+      "Calculus I & II",
+      "Probability and Data Analysis",
+    ],
+  };
 
   const cards = [
     {
@@ -14,8 +107,12 @@ export function InteractiveCards() {
       title: "Education",
       gradient: "from-cyan-400 to-blue-500",
       items: [
-        { degree: "B.S. Computer Science", school: "Your University", year: "2024", focus: "Artificial Intelligence" },
-        // Add more education items here
+        {
+          degree: "B.Sc. Computer Science",
+          school: "Kennesaw State University",
+          year: "2025",
+          focus: "AI Concentration | Minor: Software Engineering",
+        },
       ],
     },
     {
@@ -24,10 +121,10 @@ export function InteractiveCards() {
       title: "Focus Areas",
       gradient: "from-blue-500 to-purple-600",
       items: [
-        { area: "Computer Vision", description: "CNNs, object detection, image segmentation" },
-        { area: "Natural Language Processing", description: "Text analysis, sentiment detection" },
-        { area: "Machine Learning Pipelines", description: "Data engineering and model deployment" },
-        { area: "Software Testing", description: "Quality assurance and test automation" },
+        { area: "Machine Learning & AI", description: "Deep learning, CNNs, NLP, and computer vision systems" },
+        { area: "Backend Development", description: "Spring Boot, FastAPI, Flask, Node.js with cloud deployment" },
+        { area: "Research & Innovation", description: "EEG data analysis, brain imaging, and emerging tech" },
+        { area: "Software Engineering", description: "CI/CD, testing, Docker, and scalable system design" },
       ],
     },
     {
@@ -36,9 +133,24 @@ export function InteractiveCards() {
       title: "Experience",
       gradient: "from-purple-600 to-pink-500",
       items: [
-        { role: "Research Assistant", company: "University Lab", period: "2023 - 2024", description: "AI research projects" },
-        { role: "Software Tester", company: "Tech Company", period: "2022 - 2023", description: "Quality assurance" },
-        // Add more experience items here
+        {
+          role: "Undergraduate Research Assistant",
+          company: "Kennesaw State University",
+          period: "Dec 2023 - Dec 2025",
+          description: "EEG data systems & AI research",
+        },
+        {
+          role: "Backend Software Engineer Intern",
+          company: "XR DOJO (Immersive Tech Studio)",
+          period: "May 2024 - Aug 2024",
+          description: "Mixed-reality portal systems",
+        },
+        {
+          role: "IEEE Computer Society President",
+          company: "Kennesaw State University",
+          period: "Apr 2024 - Dec 2025",
+          description: "Leading 100+ member org",
+        },
       ],
     },
   ];
@@ -61,9 +173,9 @@ export function InteractiveCards() {
                 className="relative group"
               >
                 {/* Gradient border effect */}
-                <div 
+                <div
                   className={`absolute -inset-0.5 bg-gradient-to-r ${card.gradient} opacity-50 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl blur`}
-                ></div>
+                />
 
                 {/* Card content */}
                 <div className="relative bg-zinc-900 rounded-2xl p-8 h-full border border-zinc-800 group-hover:border-zinc-700 transition-all duration-300">
@@ -75,26 +187,51 @@ export function InteractiveCards() {
                     <h3 className="text-2xl font-semibold text-zinc-100">{card.title}</h3>
                   </div>
 
-                  {/* Card content */}
-                  <div className="space-y-4">
-                    {card.id === 1 && card.items.map((item: any, idx) => (
+                  {/* Education Card */}
+                  {card.id === 1 && (
+                    <>
+                      {/* Degree Info */}
                       <motion.div
-                        key={idx}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: hoveredCard === card.id ? 1 : 0.7 }}
                         transition={{ duration: 0.3 }}
-                        className="pb-4 border-b border-zinc-800 last:border-0"
+                        className="pb-4 border-b border-zinc-800"
                       >
-                        <div className="font-medium text-zinc-100">{item.degree}</div>
-                        <div className="text-sm text-zinc-400">{item.school}</div>
+                        <div className="font-medium text-zinc-100">{card.items[0].degree}</div>
+                        <div className="text-sm text-zinc-400">{card.items[0].school}</div>
                         <div className="flex items-center justify-between mt-1">
-                          <span className="text-xs text-zinc-500">{item.focus}</span>
-                          <span className="text-xs text-cyan-400">{item.year}</span>
+                          <span className="text-xs text-zinc-500">{card.items[0].focus}</span>
+                          <span className="text-xs text-cyan-400">{card.items[0].year}</span>
                         </div>
                       </motion.div>
-                    ))}
 
-                    {card.id === 2 && card.items.map((item: any, idx) => (
+                      {/* Coursework with auto-scroll */}
+                      <div className="mt-4">
+                        <div className="text-sm font-medium text-zinc-300 mb-3">Relevant Coursework</div>
+                        <div
+                          ref={scrollRef}
+                          className={`h-48 overflow-y-auto pr-2 transition-all duration-300 ${
+                            showScrollbar ? "scrollbar-thin" : "scrollbar-hide"
+                          }`}
+                        >
+                          {/* Duplicate content for seamless loop */}
+                          {[0, 1].map((copyIndex) => (
+                            <div key={copyIndex}>
+                              <CourseSection title="AI & Machine Learning" color="cyan" courses={coursework.ai} />
+                              <CourseSection title="Core Computer Science" color="blue" courses={coursework.core} />
+                              <CourseSection title="Software Engineering" color="purple" courses={coursework.swe} />
+                              <CourseSection title="Mathematics" color="pink" courses={coursework.math} />
+                              {copyIndex === 0 && <div className="h-1" />}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {/* Focus Areas Card */}
+                  {card.id === 2 &&
+                    card.items.map((item: any, idx) => (
                       <motion.div
                         key={idx}
                         initial={{ opacity: 0 }}
@@ -107,7 +244,9 @@ export function InteractiveCards() {
                       </motion.div>
                     ))}
 
-                    {card.id === 3 && card.items.map((item: any, idx) => (
+                  {/* Experience Card */}
+                  {card.id === 3 &&
+                    card.items.map((item: any, idx) => (
                       <motion.div
                         key={idx}
                         initial={{ opacity: 0 }}
@@ -123,7 +262,6 @@ export function InteractiveCards() {
                         </div>
                       </motion.div>
                     ))}
-                  </div>
                 </div>
               </motion.div>
             );
@@ -131,5 +269,31 @@ export function InteractiveCards() {
         </div>
       </div>
     </section>
+  );
+}
+
+// Course section component
+function CourseSection({ title, color, courses }: { title: string; color: string; courses: string[] }) {
+  const colorMap = {
+    cyan: "text-cyan-400",
+    blue: "text-blue-400",
+    purple: "text-purple-400",
+    pink: "text-pink-400",
+  };
+
+  const colorClass = colorMap[color as keyof typeof colorMap];
+
+  return (
+    <div className="mb-3 last:mb-0">
+      <div className={`text-xs font-semibold mb-1.5 ${colorClass}`}>{title}</div>
+      <div className="space-y-1">
+        {courses.map((course, i) => (
+          <div key={i} className="text-xs text-zinc-400 flex items-start gap-1.5">
+            <span className={`${colorClass} mt-0.5`}>•</span>
+            <span className="leading-tight">{course}</span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
