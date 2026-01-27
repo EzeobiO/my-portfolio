@@ -4,6 +4,26 @@ import { motion } from "framer-motion";
 import { GraduationCap, Target, Briefcase } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
+// TypeScript interfaces for type safety
+interface EducationItem {
+  degree: string;
+  school: string;
+  year: string;
+  focus: string;
+}
+
+interface FocusAreaItem {
+  area: string;
+  description: string;
+}
+
+interface ExperienceItem {
+  role: string;
+  company: string;
+  period: string;
+  description: string;
+}
+
 export function InteractiveCards() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [showScrollbar, setShowScrollbar] = useState(false);
@@ -100,58 +120,64 @@ export function InteractiveCards() {
     ],
   };
 
+  const educationItems: EducationItem[] = [
+    {
+      degree: "B.Sc. Computer Science",
+      school: "Kennesaw State University",
+      year: "2025",
+      focus: "AI Concentration | Minor: Software Engineering",
+    },
+  ];
+
+  const focusAreaItems: FocusAreaItem[] = [
+    { area: "Machine Learning & AI", description: "Deep learning, CNNs, NLP, and computer vision systems" },
+    { area: "Backend Development", description: "Spring Boot, FastAPI, Flask, Node.js with cloud deployment" },
+    { area: "Research & Innovation", description: "EEG data analysis, brain imaging, and emerging tech" },
+    { area: "Software Engineering", description: "CI/CD, testing, Docker, and scalable system design" },
+  ];
+
+  const experienceItems: ExperienceItem[] = [
+    {
+      role: "Undergraduate Research Assistant",
+      company: "Kennesaw State University",
+      period: "Dec 2023 - Dec 2025",
+      description: "EEG data systems & AI research",
+    },
+    {
+      role: "Backend Software Engineer Intern",
+      company: "XR DOJO (Immersive Tech Studio)",
+      period: "May 2024 - Aug 2024",
+      description: "Mixed-reality portal systems",
+    },
+    {
+      role: "IEEE Computer Society President",
+      company: "Kennesaw State University",
+      period: "Apr 2024 - Dec 2025",
+      description: "Leading 100+ member org",
+    },
+  ];
+
   const cards = [
     {
       id: 1,
       icon: GraduationCap,
       title: "Education",
       gradient: "from-cyan-400 to-blue-500",
-      items: [
-        {
-          degree: "B.Sc. Computer Science",
-          school: "Kennesaw State University",
-          year: "2025",
-          focus: "AI Concentration | Minor: Software Engineering",
-        },
-      ],
+      items: educationItems,
     },
     {
       id: 2,
       icon: Target,
       title: "Focus Areas",
       gradient: "from-blue-500 to-purple-600",
-      items: [
-        { area: "Machine Learning & AI", description: "Deep learning, CNNs, NLP, and computer vision systems" },
-        { area: "Backend Development", description: "Spring Boot, FastAPI, Flask, Node.js with cloud deployment" },
-        { area: "Research & Innovation", description: "EEG data analysis, brain imaging, and emerging tech" },
-        { area: "Software Engineering", description: "CI/CD, testing, Docker, and scalable system design" },
-      ],
+      items: focusAreaItems,
     },
     {
       id: 3,
       icon: Briefcase,
       title: "Experience",
       gradient: "from-purple-600 to-pink-500",
-      items: [
-        {
-          role: "Undergraduate Research Assistant",
-          company: "Kennesaw State University",
-          period: "Dec 2023 - Dec 2025",
-          description: "EEG data systems & AI research",
-        },
-        {
-          role: "Backend Software Engineer Intern",
-          company: "XR DOJO (Immersive Tech Studio)",
-          period: "May 2024 - Aug 2024",
-          description: "Mixed-reality portal systems",
-        },
-        {
-          role: "IEEE Computer Society President",
-          company: "Kennesaw State University",
-          period: "Apr 2024 - Dec 2025",
-          description: "Leading 100+ member org",
-        },
-      ],
+      items: experienceItems,
     },
   ];
 
@@ -188,50 +214,57 @@ export function InteractiveCards() {
                   </div>
 
                   {/* Education Card */}
-                  {card.id === 1 && (
-                    <>
-                      {/* Degree Info */}
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: hoveredCard === card.id ? 1 : 0.7 }}
-                        transition={{ duration: 0.3 }}
-                        className="pb-4 border-b border-zinc-800"
-                      >
-                        <div className="font-medium text-zinc-100">{card.items[0].degree}</div>
-                        <div className="text-sm text-zinc-400">{card.items[0].school}</div>
-                        <div className="flex items-center justify-between mt-1">
-                          <span className="text-xs text-zinc-500">{card.items[0].focus}</span>
-                          <span className="text-xs text-cyan-400">{card.items[0].year}</span>
-                        </div>
-                      </motion.div>
-
-                      {/* Coursework with auto-scroll */}
-                      <div className="mt-4">
-                        <div className="text-sm font-medium text-zinc-300 mb-3">Relevant Coursework</div>
-                        <div
-                          ref={scrollRef}
-                          className={`h-48 overflow-y-auto pr-2 transition-all duration-300 ${
-                            showScrollbar ? "scrollbar-thin" : "scrollbar-hide"
-                          }`}
+                  {card.id === 1 && (() => {
+                    const items = card.items as EducationItem[];
+                    const eduItem = items[0];
+                    
+                    return (
+                      <>
+                        {/* Degree Info */}
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: hoveredCard === card.id ? 1 : 0.7 }}
+                          transition={{ duration: 0.3 }}
+                          className="pb-4 border-b border-zinc-800"
                         >
-                          {/* Duplicate content for seamless loop */}
-                          {[0, 1].map((copyIndex) => (
-                            <div key={copyIndex}>
-                              <CourseSection title="AI & Machine Learning" color="cyan" courses={coursework.ai} />
-                              <CourseSection title="Core Computer Science" color="blue" courses={coursework.core} />
-                              <CourseSection title="Software Engineering" color="purple" courses={coursework.swe} />
-                              <CourseSection title="Mathematics" color="pink" courses={coursework.math} />
-                              {copyIndex === 0 && <div className="h-1" />}
-                            </div>
-                          ))}
+                          <div className="font-medium text-zinc-100">{eduItem.degree}</div>
+                          <div className="text-sm text-zinc-400">{eduItem.school}</div>
+                          <div className="flex items-center justify-between mt-1">
+                            <span className="text-xs text-zinc-500">{eduItem.focus}</span>
+                            <span className="text-xs text-cyan-400">{eduItem.year}</span>
+                          </div>
+                        </motion.div>
+
+                        {/* Coursework with auto-scroll */}
+                        <div className="mt-4">
+                          <div className="text-sm font-medium text-zinc-300 mb-3">Relevant Coursework</div>
+                          <div
+                            ref={scrollRef}
+                            className={`h-48 overflow-y-auto pr-2 transition-all duration-300 ${
+                              showScrollbar ? "scrollbar-thin" : "scrollbar-hide"
+                            }`}
+                          >
+                            {/* Duplicate content for seamless loop */}
+                            {[0, 1].map((copyIndex) => (
+                              <div key={copyIndex}>
+                                <CourseSection title="AI & Machine Learning" color="cyan" courses={coursework.ai} />
+                                <CourseSection title="Core Computer Science" color="blue" courses={coursework.core} />
+                                <CourseSection title="Software Engineering" color="purple" courses={coursework.swe} />
+                                <CourseSection title="Mathematics" color="pink" courses={coursework.math} />
+                                {copyIndex === 0 && <div className="h-6" />}
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    </>
-                  )}
+                      </>
+                    );
+                  })()}
 
                   {/* Focus Areas Card */}
-                  {card.id === 2 &&
-                    card.items.map((item: any, idx) => (
+                  {card.id === 2 && (() => {
+                    const items = card.items as FocusAreaItem[];
+                    
+                    return items.map((item, idx) => (
                       <motion.div
                         key={idx}
                         initial={{ opacity: 0 }}
@@ -242,11 +275,14 @@ export function InteractiveCards() {
                         <div className="font-medium text-zinc-100">{item.area}</div>
                         <div className="text-sm text-zinc-400 mt-1">{item.description}</div>
                       </motion.div>
-                    ))}
+                    ));
+                  })()}
 
                   {/* Experience Card */}
-                  {card.id === 3 &&
-                    card.items.map((item: any, idx) => (
+                  {card.id === 3 && (() => {
+                    const items = card.items as ExperienceItem[];
+                    
+                    return items.map((item, idx) => (
                       <motion.div
                         key={idx}
                         initial={{ opacity: 0 }}
@@ -261,7 +297,8 @@ export function InteractiveCards() {
                           <span className="text-xs text-purple-400">{item.period}</span>
                         </div>
                       </motion.div>
-                    ))}
+                    ));
+                  })()}
                 </div>
               </motion.div>
             );
