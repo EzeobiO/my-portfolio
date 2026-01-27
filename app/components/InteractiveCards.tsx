@@ -251,7 +251,7 @@ export function InteractiveCards() {
                                 <CourseSection title="Core Computer Science" color="blue" courses={coursework.core} />
                                 <CourseSection title="Software Engineering" color="purple" courses={coursework.swe} />
                                 <CourseSection title="Mathematics" color="pink" courses={coursework.math} />
-                                {copyIndex === 0 && <div className="h-6" />}
+                                {copyIndex === 0 && <div className="h-1" />}
                               </div>
                             ))}
                           </div>
