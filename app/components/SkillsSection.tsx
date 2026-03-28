@@ -12,59 +12,59 @@ export function SkillsSection() {
       gradient: "from-cyan-400 to-blue-500",
       skills: [
         "PyTorch",
-        "TensorFlow",
-        "Scikit-learn",
-        "Keras",
-        "CNNs",
-        "RNNs",
+        "Deep Learning",
         "Computer Vision",
         "NLP",
+        "CNNs",
+        "Transformers",
+        "XGBoost",
+        "Scikit-Learn",
       ],
     },
     {
       id: 2,
       icon: Database,
-      title: "Data & Analytics",
+      title: "Data Science & Analytics",
       gradient: "from-blue-500 to-purple-600",
       skills: [
-        "Pandas",
+        "pandas",
         "NumPy",
         "Matplotlib",
-        "Seaborn",
-        "Tableau",
+        "SciPy",
         "SQL",
+        "MongoDB",
+        "Tableau",
         "Data Pipelines",
-        "EDA",
       ],
     },
     {
       id: 3,
       icon: Code,
-      title: "Software Engineering",
+      title: "Backend & Full-Stack",
       gradient: "from-purple-600 to-pink-500",
       skills: [
-        "Python",
-        "Java",
-        "JavaScript",
-        "React",
+        "Spring Boot",
+        "FastAPI",
+        "Flask",
+        "Node.js/Express",
+        "React Native",
         "Next.js",
-        "Git",
-        "Testing",
         "REST APIs",
+        "Unity",
       ],
     },
     {
       id: 4,
       icon: Wrench,
-      title: "Tools & Platforms",
+      title: "Languages & Tools",
       gradient: "from-pink-500 to-red-500",
       skills: [
-        "Jupyter",
-        "VS Code",
+        "Python",
+        "Java",
+        "JavaScript/TypeScript",
+        "C#",
+        "AWS (EC2, S3)",
         "Docker",
-        "AWS",
-        "Linux",
-        "OpenCV",
         "Git/GitHub",
         "CI/CD",
       ],
@@ -83,10 +83,10 @@ export function SkillsSection() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
-            Skills & Tools
+            Technical Skills
           </h2>
           <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
-            A comprehensive toolkit for building intelligent, data-driven applications
+            5+ years of programming experience with expertise in AI/ML, backend development, and data science
           </p>
         </motion.div>
 

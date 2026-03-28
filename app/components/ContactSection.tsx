@@ -34,7 +34,7 @@ export function ContactSection() {
   ];
 
   return (
-    <section id="contact" className="py-20 px-6">
+    <section id="contact" className="py-20 px-6  bg-zinc-900/50">
       <div className="max-w-4xl mx-auto">
         {/* Section header */}
         <motion.div
